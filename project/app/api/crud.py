@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from app.models.pydantic import SummmaryPayloadSchema
 from app.models.tortoise import TextSummary
 
@@ -16,3 +16,8 @@ async def get(id: int) -> Optional[dict]:
     if summary:
         return summary
     return None
+
+
+async def get_all() -> List:
+    summaries = await TextSummary.all().values()
+    return summaries
