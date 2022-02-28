@@ -11,9 +11,9 @@ env:
       runs-on: ubuntu-latest
       steps:
         - name: Checkout
-        uses: actions/checkout@v2.4.0
-        with:
-          ref: main
+          uses: actions/checkout@v2.4.0
+          with:
+            ref: main
         - name: Log in to GitHub Packages
           run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
           env:
@@ -39,23 +39,23 @@ env:
         uses: actions/checkout@v2.4.0
         with:
           ref: main
-        - name: Log in to GitHub Packages
-          run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
-          env:
-            GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        - name: Pull IMAGE
-          run: |
-            docker pull ${{env.IMAGE}}:latest || true
-        - name: Build image
-          run: |
+      - name: Log in to GitHub Packages
+        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Pull IMAGE
+        run: |
+          docker pull ${{env.IMAGE}}:latest || true
+      - name: Build image
+        run: |
             docker build \
             --cache-from ${{env.IMAGE}}:latest \
             --tag ${{env.image}}:latest \
-            --file ./project/Dockerfile.prod
+            --file ./project/Dockerfile.prod \
             "./project"
 
-        - name: Run container
-          run: |
+      - name: Run container
+        run: |
             docker run \
             -d \
             --name conduit-tdd \
@@ -64,13 +64,13 @@ env:
             -e DATABASE_URL=sqlite://sqlite.db \
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
             -p 5003:8765 \
-          ${{env.IMAGE}}:latest
-        - name: Pytest
-          run: docker exec conduit-tdd python -m pytest .
-        - name: Flake8
-          run: docker exec conduit-tdd python -m flake8 .
-        - name: Black
-          run: docker exec conduit-tdd python -m black . --check
-        - name: isort
-          run: docker exec conduit-tdd python -m isort . --check-only
+            ${{env.IMAGE}}:latest
+      - name: Pytest
+        run: docker exec conduit-tdd python -m pytest .
+      - name: Flake8
+        run: docker exec conduit-tdd python -m flake8 .
+      - name: Black
+        run: docker exec conduit-tdd python -m black . --check
+      - name: isort
+        run: docker exec conduit-tdd python -m isort . --check-only
 
