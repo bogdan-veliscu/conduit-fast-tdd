@@ -1,9 +1,10 @@
 from typing import List
+
 from fastapi import APIRouter, HTTPException
 
 from app.api import crud
+from app.models.pydantic import SummaryResponseSchema, SummmaryPayloadSchema
 from app.models.tortoise import SummarySchema
-from app.models.pydantic import SummmaryPayloadSchema, SummaryResponseSchema
 
 router = APIRouter()
 

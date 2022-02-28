@@ -1,4 +1,5 @@
-from typing import Optional, List
+from typing import List, Optional
+
 from app.models.pydantic import SummmaryPayloadSchema
 from app.models.tortoise import TextSummary
 
