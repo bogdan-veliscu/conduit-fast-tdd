@@ -1,13 +1,13 @@
 import nltk
 from newspaper import Article
 
+from app.models.tortoise import TextSummary
 
-def generate_summary(url: str) -> str:
+
+async def generate_summary(summary_id: int, url: str) -> str:
     article = Article(url)
     article.download()
     article.parse()
-    article.nlp()
-    return article.summary
 
     try:
         nltk.data.find("tokenizers/punkt")
@@ -16,4 +16,6 @@ def generate_summary(url: str) -> str:
     finally:
         article.nlp()
 
-    return article.summary
+    summary = article.summary
+
+    await TextSummary.filter(id=summary_id).update(summary=summary)
